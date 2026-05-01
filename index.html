@@ -417,10 +417,14 @@
             const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
             const d = await r.json();
             if (d.images?.length) {
-                bingImagenes = d.images.map(img => ({
-                    url: 'https://www.bing.com' + img.url,
-                    lugar: (img.copyright || '').replace(/\s*\(.*?\)\s*/g, '').trim()
-                })).sort(() => Math.random() - 0.5);
+                bingImagenes = d.images.map(img => {
+                    const copyright = img.copyright || '';
+                    const titulo = img.title || '';
+                    // "Lugar bonito (© Fotógrafo)" → "Lugar bonito"
+                    const lugar = titulo || copyright.replace(/\s*[\(\©][^)]*\)?\s*$/g, '').trim();
+                    console.log('Bing imagen:', { titulo, copyright, lugar });
+                    return { url: 'https://www.bing.com' + img.url, lugar };
+                }).sort(() => Math.random() - 0.5);
             }
         } catch (_) {}
     }
@@ -442,7 +446,9 @@
         img.onload = () => {
             t.style.backgroundImage = `url('${url}')`;
             t.classList.add('active'); o.classList.remove('active'); alternar = !alternar;
-            document.getElementById('paisaje-label').textContent = lugar;
+            const lbl = document.getElementById('paisaje-label');
+            lbl.textContent = lugar;
+            lbl.style.display = lugar ? 'block' : 'none';
         };
     }
 
