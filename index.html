@@ -175,7 +175,11 @@
             <div class="trivia-box" id="trivia-container"><div id="trivia-content" style="transition: opacity 0.5s;"></div></div>
         </div>
         <div class="bottom-right-container">
-            <div class="paisaje-mini-box"><div class="layer active" id="capa1"></div><div class="layer" id="capa2"></div></div>
+            <div class="paisaje-mini-box">
+                <div class="layer active" id="capa1"></div>
+                <div class="layer" id="capa2"></div>
+                <div id="paisaje-label" style="position:absolute;bottom:0;left:0;right:0;padding:10px 18px;background:linear-gradient(transparent,rgba(0,0,0,0.65));color:#fff;font-size:0.85rem;font-weight:500;z-index:10;text-align:right;letter-spacing:0.03em;"></div>
+            </div>
 
             <!-- ==================== CÁMARAS ==================== -->
             <div class="camaras-container">
@@ -391,13 +395,41 @@
     }
 
     let alternar = true;
+    let bingImagenes = [], bingIdx = 0;
+
+    async function cargarImagenesBing() {
+        try {
+            const url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=es-AR';
+            const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
+            const d = await r.json();
+            if (d.images?.length) {
+                bingImagenes = d.images.map(img => ({
+                    url: 'https://www.bing.com' + img.url,
+                    lugar: (img.copyright || '').replace(/\s*\(.*?\)\s*/g, '').trim()
+                })).sort(() => Math.random() - 0.5);
+            }
+        } catch (_) {}
+    }
+
     function actualizarPaisaje() {
         const c1 = document.getElementById('capa1'), c2 = document.getElementById('capa2');
         const t = alternar ? c2 : c1, o = alternar ? c1 : c2;
-        const url = `https://loremflickr.com/1000/800/mountain,forest,lake?random=${Date.now()}`;
+
+        let url, lugar = '';
+        if (bingImagenes.length) {
+            const bi = bingImagenes[bingIdx % bingImagenes.length];
+            url = bi.url; lugar = bi.lugar; bingIdx++;
+        } else {
+            url = `https://loremflickr.com/1000/800/mountain,forest,lake?random=${Date.now()}`;
+        }
+
         const img = new Image();
         img.src = url;
-        img.onload = () => { t.style.backgroundImage = `url('${url}')`; t.classList.add('active'); o.classList.remove('active'); alternar = !alternar; };
+        img.onload = () => {
+            t.style.backgroundImage = `url('${url}')`;
+            t.classList.add('active'); o.classList.remove('active'); alternar = !alternar;
+            document.getElementById('paisaje-label').textContent = lugar;
+        };
     }
 
     // ── CÁMARAS WEBRTC ───────────────────────────────────────────────────────
@@ -432,7 +464,7 @@
     actualizarModo();
     reloj();
     clima();
-    actualizarPaisaje();
+    cargarImagenesBing().then(actualizarPaisaje);
     iniciarCamara(document.getElementById('cam1'), 'camara1_sub');
     iniciarCamara(document.getElementById('cam2'), 'camara2_sub');
     conReintentos(cargarAgenda);
