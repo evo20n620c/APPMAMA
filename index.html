@@ -187,7 +187,7 @@
             <div class="paisaje-mini-box">
                 <div class="layer active" id="capa1"></div>
                 <div class="layer" id="capa2"></div>
-                <div id="paisaje-label" style="position:absolute;bottom:0;left:0;right:0;padding:10px 18px;background:linear-gradient(transparent,rgba(0,0,0,0.65));color:#fff;font-size:0.85rem;font-weight:500;z-index:10;text-align:right;letter-spacing:0.03em;"></div>
+                <div id="paisaje-label" style="position:absolute;bottom:0;left:0;right:0;padding:14px 18px 12px;background:linear-gradient(transparent,rgba(0,0,0,0.85));color:#fff;font-size:0.95rem;font-weight:600;z-index:10;text-align:right;letter-spacing:0.03em;text-shadow:0 1px 4px rgba(0,0,0,0.8);"></div>
             </div>
 
             <!-- ==================== CÁMARAS ==================== -->
@@ -413,7 +413,7 @@
 
     async function cargarImagenesBing() {
         try {
-            const url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=es-AR';
+            const url = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=es-ES';
             const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(url), { signal: AbortSignal.timeout(10000) });
             const d = await r.json();
             if (d.images?.length) {
