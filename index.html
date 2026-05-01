@@ -1,75 +1,22 @@
 <!--
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                        RELOJ FAMILIAR - DOCUMENTACIÓN                       ║
+║ RELOJ FAMILIAR - DOCUMENTACIÓN ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  ARCHIVOS DEL PROYECTO (carpeta: C:\Users\Diana\reloj-mama\)                ║
-║  ├── reloj.html        → este archivo, toda la app en un solo HTML          ║
-║  └── go2rtc.yaml       → configuración del servidor de cámaras              ║
+║ ARCHIVOS DEL PROYECTO (carpeta: C:\Users\Diana\reloj-mama\) ║
+║ ├── reloj.html → este archivo, toda la app en un solo HTML ║
+║ └── go2rtc.yaml → configuración del servidor de cámaras ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║  GOOGLE SHEETS (datos viven en la nube, se editan desde Drive)              ║
-║  · Agenda   → columna A: fecha (DD/MM), columna B: evento                  ║
-║    https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-   ║
-║    5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub       ║
-║                                                                              ║
-║  · Frases   → col A: hora desde (HH:MM), col B: hora hasta, col C: texto   ║
-║    https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5i  ║
-║    UFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub        ║
-║                                                                              ║
-║  · Trivia   → col A: pregunta, B-D: opciones A/B/C, col E: respuesta        ║
-║    https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPs  ║
-║    tM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub       ║
-║                                                                              ║
-║  Nota: estos son los links de publicación (CSV). Para editar, abrí          ║
-║  Google Drive y buscá las hojas por nombre.                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  CÁMARAS — arquitectura                                                      ║
-║  Las cámaras Tapo C200 usan H264 (no MJPEG), por eso se usa WebRTC.        ║
-║                                                                              ║
-║  Flujo:  Cámara IP → RTSP → go2rtc → WebRTC → iframe en el reloj           ║
-║                                                                              ║
-║  go2rtc es un servidor local que corre en la TABLET. Debe iniciarse         ║
-║  ANTES de abrir el reloj, idealmente al arrancar Windows.                   ║
-║    · Doble clic en go2rtc.exe (misma carpeta que go2rtc.yaml)               ║
-║    · Para que arranque solo al encender: crear acceso directo a             ║
-║      go2rtc.exe y copiarlo en:                                              ║
-║      C:\Users\Diana\AppData\Roaming\Microsoft\Windows\Start Menu\          ║
-║      Programs\Startup                                                        ║
-║    · Panel web: http://localhost:1984                                        ║
-║    · Si dice "port already in use": hay dos instancias corriendo.           ║
-║      Solución: abrir Task Manager → terminar todos los procesos go2rtc      ║
-║      y volver a iniciar uno solo.                                           ║
-║                                                                              ║
-║  go2rtc.yaml:                                                                ║
-║    streams:                                                                  ║
-║      camara1: rtsp://Camarasmama:romina2000@192.168.1.49/stream1            ║
-║      camara2: rtsp://Camarasmama:romina2000@192.168.0.161/stream1           ║
-║                                                                              ║
-║  Para agregar una nueva cámara: añadir entrada en go2rtc.yaml y             ║
-║  agregar un <iframe src="http://localhost:1984/stream.html?src=NOMBRE       ║
-║  &mode=webrtc"> en el HTML.                                                  ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  SERVICIOS EXTERNOS (sin API key)                                            ║
-║  · Clima:      api.open-meteo.com  — Buenos Aires (-34.61, -58.43)          ║
-║  · Noticias:   La Nación RSS → api.rss2json.com (fallback: Clarín)          ║
-║  · Fotos:      loremflickr.com — búsqueda: mountain, forest, lake           ║
-║  · Trivia img: Wikipedia REST API (es → en → loremflickr como fallback)     ║
-║  · Fuentes:    Google Fonts (Quicksand + Caveat)                            ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  MODO DÍA / NOCHE                                                            ║
-║  · 08:00–20:00 → fondo crema claro  (#E8DCC8, cajas #F5EFE0)               ║
-║  · 20:00–08:00 → fondo marrón oscuro (#1E1510, cajas #2A1F14)              ║
-║  Se activa automáticamente con la clase CSS "modo-noche" en <body>.         ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║  INTERVALOS DE ACTUALIZACIÓN                                                 ║
-║  · Reloj:    cada 1 segundo                                                  ║
-║  · Agenda:   cada 60 segundos                                                ║
-║  · Frases:   cada 30 segundos                                                ║
-║  · Trivia:   cada 8 segundos (alterna pregunta ↔ respuesta)                 ║
-║  · Clima:    cada 5 minutos                                                  ║
-║  · Fotos:    cada 30 segundos                                                ║
-║  · Noticias: cada 10 minutos                                                 ║
+║ GOOGLE SHEETS (datos viven en la nube, se editan desde Drive) ║
+║ · Agenda → columna A: fecha (DD/MM), columna B: evento ║
+║ https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub ║
+║ · Frases → col A: hora desde (HH:MM), col B: hora hasta, col C: texto ║
+║ https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub ║
+║ · Trivia → col A: pregunta, B-D: opciones A/B/C, col E: respuesta ║
+║ https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub ║
+║ Nota: estos son los links de publicación (CSV). Para editar, abrí Google Drive y buscá las hojas por nombre. ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -78,10 +25,8 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
     <title>Reloj Familiar Premium - Noticias Legibles</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --bg: #E8DCC8; --card: #F5EFE0; --dim: #7D6047;
@@ -94,14 +39,12 @@
             transition: transform 1s ease-in-out; background: var(--bg);
         }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; font-family: var(--font-soft); }
-
         .grid {
             display: grid;
             grid-template-columns: 50% 50%;
             grid-template-rows: 22% 70% 8%;
             height: 100vh; padding: 20px; box-sizing: border-box; gap: 15px;
         }
-
         .box { background: var(--card); border-radius: 40px; border: 1px solid var(--border); display: flex; position: relative; overflow: hidden; }
         .top-left-group { flex-direction: row; justify-content: space-evenly; align-items: center; padding: 10px 20px; }
         #hora { font-size: 5.5rem; font-weight: 400; line-height: 1; letter-spacing: -2px; color: var(--text); }
@@ -119,25 +62,20 @@
             transition: transform 0.12s ease, box-shadow 0.12s ease;
         }
         .btn-llamar:active { transform: scale(0.9); box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
-
         .left-column-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; }
         .bottom-left-agenda { padding: 35px; flex-direction: column; flex: 2; min-height: 0; }
         .agenda-evento { font-size: 1.4rem; font-weight: 500; color: var(--text); margin-bottom: 10px; display: flex; align-items: flex-start; gap: 15px; }
         .agenda-evento::before { content: ""; min-width: 10px; height: 10px; background: var(--accent); border-radius: 50%; margin-top: 10px; }
-
         .bottom-right-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; }
         .paisaje-mini-box { flex: 3; min-height: 0; background: #6B5240; border-radius: 40px; overflow: hidden; border: 1px solid var(--border); position: relative; }
         .layer { position: absolute; width: 100%; height: 100%; transition: opacity 2s; opacity: 0; background-size: cover; background-position: center; }
         .layer.active { opacity: 1; }
-
         .trivia-box { flex: 1; min-height: 0; background: linear-gradient(145deg, var(--card), var(--bg)); border-radius: 40px; border: 1px solid var(--border); padding: 22px 30px; display: flex; flex-direction: column; justify-content: center; text-align: center; }
         .trivia-txt { font-size: 1.4rem; font-weight: 500; color: var(--text); margin-bottom: 5px; }
         .trivia-res { font-size: 1.4rem; font-weight: 500; color: var(--accent); }
-
         .camaras-container { flex: 2; min-height: 0; display: flex; gap: 10px; }
         .camara-box { flex: 1; border-radius: 30px; border: 1px solid var(--border); overflow: hidden; background: var(--card); position: relative; }
         .camara-label { position: absolute; top: 0; left: 0; right: 0; text-align: center; font-size: 0.8rem; font-weight: 600; color: #fff; padding: 6px 0 10px; background: linear-gradient(rgba(0,0,0,0.55), transparent); }
-
         .news-ticker {
             grid-column: span 2;
             background: var(--bg);
@@ -170,7 +108,6 @@
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-100%, 0, 0); }
         }
-
         body, html, #anti-burn-container, .box, .news-ticker, .trivia-box, .weather-divider {
             transition: background 2s ease, background-color 2s ease, color 2s ease, border-color 2s ease;
         }
@@ -195,16 +132,27 @@
         </div>
         <div class="bottom-right-container">
             <div class="paisaje-mini-box"><div class="layer active" id="capa1"></div><div class="layer" id="capa2"></div></div>
+            
+            <!-- ==================== CÁMARAS ==================== -->
             <div class="camaras-container">
+                <!-- Cámara 1 -->
                 <div class="camara-box">
-                    <iframe src="http://localhost:1984/stream.html?src=camara1&mode=webrtc" allow="autoplay; fullscreen; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+                    <iframe src="rtsp://Camarasmama:romina2000@192.168.1.49:554/stream2" 
+                            allow="autoplay; fullscreen; encrypted-media"
+                            style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 1</div>
                 </div>
+
+                <!-- Cámara 2 -->
                 <div class="camara-box">
-                    <iframe src="http://localhost:1984/stream.html?src=camara2&mode=webrtc" allow="autoplay; fullscreen; encrypted-media" style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+                    <iframe src="rtsp://Camarasmama:romina2000@192.168.0.161:554/stream2" 
+                            allow="autoplay; fullscreen; encrypted-media"
+                            style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 2</div>
                 </div>
             </div>
+            <!-- ================================================= -->
+            
         </div>
         <div class="news-ticker">
             <div class="ticker-label">Noticias</div>
@@ -212,14 +160,13 @@
         </div>
     </div>
 </div>
-
 <script>
-    const AGENDA_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv';
-    const FRASES_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
-    const TRIVIA_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub?output=csv';
-    const RSS_URL     = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
-    const RSS_URL_2   = 'https://www.clarin.com/rss/lo-ultimo/';
-
+    const AGENDA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv';
+    const FRASES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
+    const TRIVIA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub?output=csv';
+    const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
+    const RSS_URL_2 = 'https://www.clarin.com/rss/lo-ultimo/';
+    
     async function fetchCSV(url) {
         const urlConTs = url + '&t=' + Date.now();
         const proxies = [
@@ -237,8 +184,6 @@
         throw new Error('Todos los proxies fallaron');
     }
 
-
-    // Reintenta una función async cada `seg` segundos si falla
     function conReintentos(fn, seg = 10) {
         const intentar = () => fn().catch(() => setTimeout(intentar, seg * 1000));
         intentar();
@@ -256,44 +201,27 @@
         const doc = new DOMParser().parseFromString(xml, 'text/xml');
         return [...doc.querySelectorAll('item')]
             .map(i => (i.querySelector('title')?.textContent || '').split(' - ')[0])
-            .filter(Boolean).join('   •   ');
+            .filter(Boolean).join(' • ');
     }
 
     async function cargarNoticias() {
-        // Intento 1: La Nación vía rss2json
         try {
             const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
             const d = await r.json();
             if (d.status === 'ok' && d.items?.length) {
-                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join('   •   ');
-                if (t) { document.getElementById('noticias-scroll').textContent = t + '   •   '; return; }
+                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
+                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
             }
         } catch (_) {}
-        // Intento 2: Clarín vía rss2json
+        
         try {
             const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL_2), { signal: AbortSignal.timeout(10000) });
             const d = await r.json();
             if (d.status === 'ok' && d.items?.length) {
-                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join('   •   ');
-                if (t) { document.getElementById('noticias-scroll').textContent = t + '   •   '; return; }
+                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
+                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
             }
         } catch (_) {}
-        // Intento 2: corsproxy.io (XML crudo)
-        try {
-            const r = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
-            const text = await r.text();
-            if (text.includes('<item')) {
-                const t = titularesDesdeXML(text);
-                if (t) { document.getElementById('noticias-scroll').textContent = t + '   •   '; return; }
-            }
-        } catch (_) {}
-        // Intento 3: allorigins (JSON con .contents)
-        const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
-        const d = await r.json();
-        if (!d.contents?.includes('<item')) throw new Error('Sin noticias');
-        const t = titularesDesdeXML(d.contents);
-        if (!t) throw new Error('Sin titulares');
-        document.getElementById('noticias-scroll').textContent = t + '   •   ';
     }
 
     // ── TRIVIA ──────────────────────────────────────────────────────────────
@@ -402,7 +330,7 @@
         }, 800);
     }
 
-// ── MODO DÍA / NOCHE ────────────────────────────────────────────────────
+    // ── MODO DÍA / NOCHE ────────────────────────────────────────────────────
     function actualizarModo() {
         const h = new Date().getHours();
         document.body.classList.toggle('modo-noche', h < 8 || h >= 20);
@@ -444,14 +372,11 @@
     reloj();
     clima();
     actualizarPaisaje();
-
-    // Google Sheets: con reintentos cada 10s si falla
     conReintentos(cargarAgenda);
     conReintentos(actualizarMensaje);
     conReintentos(() => cargarTrivia().then(mostrarTrivia));
     conReintentos(cargarNoticias);
 
-    // Intervalos normales una vez que cargaron
     setInterval(actualizarModo, 60000);
     setInterval(reloj, 1000);
     setInterval(clima, 300000);
