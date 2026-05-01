@@ -421,7 +421,7 @@
                 bingImagenes = d.images.map(img => {
                     const copyright = img.copyright || '';
                     const titulo = img.title || '';
-                    const lugar = titulo || copyright.split(' (©')[0].split(' ©')[0].trim() || 'Foto del día';
+                    const lugar = copyright.split(' (©')[0].split(' ©')[0].trim() || titulo || 'Foto del día';
                     return { url: 'https://www.bing.com' + img.url, lugar };
                 }).sort(() => Math.random() - 0.5);
             }
