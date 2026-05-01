@@ -4,20 +4,26 @@
 ║ Versión: 1.3                                                                 ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ ARCHIVOS DEL PROYECTO  (C:\Users\Diana\reloj-mama\)                          ║
-║ ├── index.html   → este archivo, toda la app                                 ║
-║ └── go2rtc.yaml  → configuración del servidor de cámaras                     ║
+║ ├── index.html    → este archivo, toda la app                                ║
+║ ├── go2rtc.yaml   → configuración del servidor de cámaras                    ║
+║ └── servidor.bat  → doble clic para arrancar go2rtc                          ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ CÓMO FUNCIONA TODO                                                           ║
 ║                                                                              ║
-║ 1. go2rtc corre en la PC (192.168.1.26, puerto 1984)                        ║
+║ 1. go2rtc corre en la PC vieja (servidor)                                    ║
 ║    · Sirve las cámaras por WebRTC                                            ║
-║    · También sirve este index.html por HTTP (gracias a static_dir en yaml)   ║
+║    · También sirve este index.html por HTTP (via static_dir en go2rtc.yaml)  ║
 ║                                                                              ║
-║ 2. La tablet (FullyKiosk) abre: http://192.168.1.26:1984/                   ║
+║ 2. Tailscale conecta la tablet y la PC aunque estén en redes distintas       ║
+║    · IP Tailscale de la PC servidor: 100.115.172.8                           ║
+║    · Tailscale tiene que estar corriendo en la PC (arranca solo con Windows) ║
+║    · Si la tablet no llega al reloj, verificar que Tailscale esté activo     ║
+║                                                                              ║
+║ 3. La tablet (FullyKiosk) abre: http://100.115.172.8:1984/                  ║
 ║    · MUY IMPORTANTE: tiene que ser HTTP, no HTTPS ni GitHub Pages            ║
 ║    · Si abre desde GitHub Pages las cámaras NO van a funcionar              ║
 ║                                                                              ║
-║ 3. Las cámaras se conectan por WebRTC directo (sin stream.html)              ║
+║ 4. Las cámaras se conectan por WebRTC directo (sin stream.html)              ║
 ║    · Streams: camara1_sub y camara2_sub (baja resolución, ideal tablet)      ║
 ║    · Si una cámara no carga, reintenta sola cada 5 segundos                 ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
@@ -27,11 +33,14 @@
 ║ 2. Guardá (Ctrl+S) → la tablet lo ve al recargar FullyKiosk                 ║
 ║ 3. Opcionalmente hacé git push para subir backup a GitHub                    ║
 ║    (la tablet NO necesita GitHub, lee directo de la PC)                      ║
+║                                                                              ║
+║ Si cambia la IP de Tailscale de la PC, actualizar la constante GO2RTC        ║
+║ al principio del <script> en index.html                                      ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ CÓMO ARRANCAR go2rtc (si la PC se reinició o go2rtc se cerró)               ║
 ║                                                                              ║
 ║ 1. Ir a C:\Users\Diana\reloj-mama\                                           ║
-║ 2. Doble clic en go2rtc.exe                                                  ║
+║ 2. Doble clic en servidor.bat  (o directo en go2rtc.exe)                     ║
 ║ 3. Si dice "port already in use": abrir Administrador de tareas,             ║
 ║    buscar todos los procesos "go2rtc", terminarlos, y volver al paso 2       ║
 ║ 4. Dejar la ventana abierta (si la cerrás, se apagan las cámaras)           ║
@@ -40,7 +49,7 @@
 ║ · Clima:    api.open-meteo.com — Buenos Aires                                ║
 ║ · Noticias: La Nación RSS (fallback: Clarín)                                 ║
 ║ · Agenda, Frases, Trivia: Google Sheets (editables desde Google Drive)       ║
-║ · Fotos de fondo: loremflickr.com (montañas, bosques, lagos)                ║
+║ · Fotos de fondo: Bing Daily Wallpaper (paisajes del mundo con nombre lugar) ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ MODO DÍA / NOCHE                                                             ║
 ║ · 08:00–20:00 → fondo crema claro                                            ║
