@@ -163,7 +163,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">go2rtc ...</div>
+            <div id="go2rtc-version">1.2</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -370,22 +370,11 @@
         img.onload = () => { t.style.backgroundImage = `url('${url}')`; t.classList.add('active'); o.classList.remove('active'); alternar = !alternar; };
     }
 
-    async function fetchGo2rtcVersion() {
-        try {
-            const r = await fetch('http://192.168.1.26:1984/api', { signal: AbortSignal.timeout(5000) });
-            const d = await r.json();
-            document.getElementById('go2rtc-version').textContent = 'go2rtc v' + (d.version || '?');
-        } catch (_) {
-            document.getElementById('go2rtc-version').textContent = 'go2rtc ✗';
-        }
-    }
-
     // ── INICIO ───────────────────────────────────────────────────────────────
     actualizarModo();
     reloj();
     clima();
     actualizarPaisaje();
-    fetchGo2rtcVersion();
     conReintentos(cargarAgenda);
     conReintentos(actualizarMensaje);
     conReintentos(() => cargarTrivia().then(mostrarTrivia));
