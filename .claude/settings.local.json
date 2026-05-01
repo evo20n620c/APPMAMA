@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.allorigins.win)",
+      "WebFetch(domain:www.infobae.com)",
+      "WebFetch(domain:www.lanacion.com.ar)",
+      "WebFetch(domain:source.unsplash.com)",
+      "WebFetch(domain:loremflickr.com)"
+    ]
+  }
+}

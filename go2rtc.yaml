@@ -1,0 +1,8 @@
+streams:
+  camara1: rtsp://Camarasmama:romina2000@192.168.1.49:554/stream1
+  camara1_sub: rtsp://Camarasmama:romina2000@192.168.1.49:554/stream2
+  camara2: rtsp://Camarasmama:romina2000@192.168.0.161:554/stream1
+  camara2_sub: rtsp://Camarasmama:romina2000@192.168.0.161:554/stream2
+
+log:
+  level: info
