@@ -1,9 +1,21 @@
 <!--
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ RELOJ FAMILIAR - DOCUMENTACIÓN ACTUALIZADA                                   ║
+║ RELOJ FAMILIAR - DOCUMENTACIÓN                                               ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ go2rtc está corriendo en la PC vieja (IP: 192.168.1.26)                      ║
-║ Versión actual: V1.1                                                         ║
+║ ARCHIVOS DEL PROYECTO                                                        ║
+║ ├── reloj.html → este archivo                                                ║
+║ └── go2rtc.yaml → configuración del servidor de cámaras (en la PC)           ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║ go2rtc está corriendo en la PC vieja                                         ║
+║ IP de la PC: 192.168.1.26                                                    ║
+║ Puerto: 1984                                                                 ║
+║                                                                              ║
+║ Streams configurados:                                                        ║
+║   camara1_sub → stream2 (baja resolución - recomendado para tablet)          ║
+║   camara2_sub → stream2                                                      ║
+║                                                                              ║
+║ Versión actual: V1.2                                                         ║
+║ Última actualización: Uso de mode=webrtc con permisos ampliados              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
 
@@ -103,16 +115,15 @@
         }
         body.modo-noche { --bg: #1E1510; --card: #2A1F14; --dim: #8B7355; --border: #3D2B1F; --text: #F0E6D3; }
 
-        /* Estilo para la versión */
         .version-info {
             position: absolute;
-            bottom: 8px;
+            bottom: 10px;
             right: 15px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--dim);
-            background: rgba(0,0,0,0.1);
-            padding: 2px 8px;
-            border-radius: 10px;
+            background: rgba(0,0,0,0.15);
+            padding: 3px 10px;
+            border-radius: 12px;
             z-index: 100;
         }
     </style>
@@ -138,16 +149,18 @@
             
             <!-- ==================== CÁMARAS ==================== -->
             <div class="camaras-container">
+                <!-- Cámara 1 -->
                 <div class="camara-box">
                     <iframe src="http://192.168.1.26:1984/stream.html?src=camara1_sub&mode=webrtc" 
-                            allow="autoplay; fullscreen; encrypted-media"
+                            allow="autoplay; fullscreen; encrypted-media; camera; microphone"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 1</div>
                 </div>
 
+                <!-- Cámara 2 -->
                 <div class="camara-box">
                     <iframe src="http://192.168.1.26:1984/stream.html?src=camara2_sub&mode=webrtc" 
-                            allow="autoplay; fullscreen; encrypted-media"
+                            allow="autoplay; fullscreen; encrypted-media; camera; microphone"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 2</div>
                 </div>
@@ -159,8 +172,8 @@
         </div>
     </div>
 
-    <!-- Versión visible en la parte inferior -->
-    <div class="version-info">V1.1</div>
+    <!-- Versión visible -->
+    <div class="version-info">V1.2</div>
 </div>
 
 <script>
