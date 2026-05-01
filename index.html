@@ -187,7 +187,7 @@
 <div id="anti-burn-container">
     <div class="grid">
         <div class="box top-left-group">
-            <div style="text-align: center;"><div id="hora">--:--</div><div id="fecha">...</div></div>
+            <div style="text-align: center;"><div id="hora">--:--</div><div id="fecha">...</div><div id="feriado" style="display:none;font-size:0.85rem;color:var(--accent);font-weight:700;margin-top:6px;">🎉</div></div>
             <div class="weather-divider"></div>
             <div style="display: flex; flex-direction: row; align-items: center; gap: 8px;"><div id="clima-icon" style="font-size: 3.5rem; line-height: 1;">🌡️</div><div id="clima-temp">--°</div></div>
         </div>
@@ -465,6 +465,24 @@
         };
     }
 
+    // ── FERIADOS ─────────────────────────────────────────────────────────────
+    async function verificarFeriado() {
+        try {
+            const año = new Date().getFullYear();
+            const r = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${año}/AR`, { signal: AbortSignal.timeout(8000) });
+            const feriados = await r.json();
+            const hoy = new Date().toISOString().split('T')[0];
+            const feriado = feriados.find(f => f.date === hoy);
+            const el = document.getElementById('feriado');
+            if (feriado) {
+                el.textContent = '🎉 ' + feriado.localName;
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
+            }
+        } catch (_) {}
+    }
+
     // ── CÁMARAS WEBRTC ───────────────────────────────────────────────────────
     function iniciarCamara(videoEl, src) {
         const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
@@ -497,6 +515,7 @@
     actualizarModo();
     reloj();
     clima();
+    verificarFeriado();
     async function iniciarPaisaje() {
         await cargarImagenesBing();
         actualizarPaisaje();
