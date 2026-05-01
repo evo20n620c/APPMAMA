@@ -1,17 +1,9 @@
 <!--
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║ v1 RELOJ FAMILIAR - DOCUMENTACIÓN ACTUALIZADA                                   ║
+║ RELOJ FAMILIAR - DOCUMENTACIÓN ACTUALIZADA                                   ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ go2rtc está corriendo en la PC vieja (IP: 192.168.1.26)                      ║
-║ Las cámaras se ven a través de: http://192.168.1.26:1984                     ║
-║                                                                              ║
-║ go2rtc.yaml (en la PC):                                                      ║
-║   camara1_sub → stream2 (baja resolución - recomendado para tablet)          ║
-║   camara2_sub → stream2                                                      ║
-║                                                                              ║
-║ Para reiniciar go2rtc en la PC:                                              ║
-║   1. Cerrar todos los procesos go2rtc.exe en el Administrador de Tareas      ║
-║   2. Ejecutar go2rtc.exe nuevamente                                          ║
+║ Versión actual: V1.1                                                         ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
 
@@ -110,6 +102,19 @@
             transition: background 2s ease, background-color 2s ease, color 2s ease, border-color 2s ease;
         }
         body.modo-noche { --bg: #1E1510; --card: #2A1F14; --dim: #8B7355; --border: #3D2B1F; --text: #F0E6D3; }
+
+        /* Estilo para la versión */
+        .version-info {
+            position: absolute;
+            bottom: 8px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: var(--dim);
+            background: rgba(0,0,0,0.1);
+            padding: 2px 8px;
+            border-radius: 10px;
+            z-index: 100;
+        }
     </style>
 </head>
 <body>
@@ -133,7 +138,6 @@
             
             <!-- ==================== CÁMARAS ==================== -->
             <div class="camaras-container">
-                <!-- Cámara 1 - Sub-stream (recomendado para tablet) -->
                 <div class="camara-box">
                     <iframe src="http://192.168.1.26:1984/stream.html?src=camara1_sub&mode=webrtc" 
                             allow="autoplay; fullscreen; encrypted-media"
@@ -141,7 +145,6 @@
                     <div class="camara-label">Cámara 1</div>
                 </div>
 
-                <!-- Cámara 2 - Sub-stream -->
                 <div class="camara-box">
                     <iframe src="http://192.168.1.26:1984/stream.html?src=camara2_sub&mode=webrtc" 
                             allow="autoplay; fullscreen; encrypted-media"
@@ -151,10 +154,13 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div class="ticker-label">v1 Noticias</div>
+            <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
     </div>
+
+    <!-- Versión visible en la parte inferior -->
+    <div class="version-info">V1.1</div>
 </div>
 
 <script>
