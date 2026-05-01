@@ -446,22 +446,23 @@
         const c1 = document.getElementById('capa1'), c2 = document.getElementById('capa2');
         const t = alternar ? c2 : c1, o = alternar ? c1 : c2;
 
-        let url, lugar = '';
+        let url, lugar = 'Foto del día';
         if (bingImagenes.length) {
             const bi = bingImagenes[bingIdx % bingImagenes.length];
-            url = bi.url; lugar = bi.lugar; bingIdx++;
+            url = bi.url; lugar = bi.lugar || 'Foto del día'; bingIdx++;
         } else {
             url = `https://loremflickr.com/1000/800/mountain,forest,lake?random=${Date.now()}`;
         }
+
+        const lbl = document.getElementById('paisaje-label');
+        lbl.textContent = lugar;
+        lbl.style.display = 'block';
 
         const img = new Image();
         img.src = url;
         img.onload = () => {
             t.style.backgroundImage = `url('${url}')`;
             t.classList.add('active'); o.classList.remove('active'); alternar = !alternar;
-            const lbl = document.getElementById('paisaje-label');
-            lbl.textContent = lugar;
-            lbl.style.display = lugar ? 'block' : 'none';
         };
     }
 
