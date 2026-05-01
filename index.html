@@ -203,7 +203,7 @@
             <div class="paisaje-mini-box">
                 <div class="layer active" id="capa1"></div>
                 <div class="layer" id="capa2"></div>
-                <div id="paisaje-label" style="position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,0.6);color:#fff;font-size:0.85rem;font-weight:600;padding:5px 14px;border-radius:20px;z-index:10;backdrop-filter:blur(4px);max-width:80%;text-align:right;"></div>
+                <div id="paisaje-label" style="display:none;position:absolute;bottom:16px;right:16px;background:rgba(0,0,0,0.6);color:#fff;font-size:0.85rem;font-weight:600;padding:5px 14px;border-radius:20px;z-index:10;backdrop-filter:blur(4px);max-width:80%;text-align:right;"></div>
             </div>
 
             <!-- ==================== CÁMARAS ==================== -->
@@ -497,7 +497,12 @@
     actualizarModo();
     reloj();
     clima();
-    cargarImagenesBing().then(actualizarPaisaje);
+    async function iniciarPaisaje() {
+        await cargarImagenesBing();
+        actualizarPaisaje();
+        if (!bingImagenes.length) setTimeout(iniciarPaisaje, 15000);
+    }
+    iniciarPaisaje();
     iniciarCamara(document.getElementById('cam1'), 'camara1_sub');
     iniciarCamara(document.getElementById('cam2'), 'camara2_sub');
     conReintentos(cargarAgenda);
