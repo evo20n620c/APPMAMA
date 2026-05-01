@@ -72,6 +72,24 @@
 ║ · 20:00–08:00 → fondo marrón oscuro                                          ║
 ║ · Cambia automáticamente, no hace falta tocar nada                           ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
+║ SI LAS CÁMARAS NO SE VEN (cambio de red/wifi)                               ║
+║                                                                              ║
+║ Las cámaras tienen IP dinámica (DHCP). Si las conectás a otra red            ║
+║ les puede cambiar la IP y dejan de verse en el reloj.                        ║
+║                                                                              ║
+║ Cómo arreglarlo:                                                             ║
+║ 1. Conectar las cámaras al wifi nuevo                                        ║
+║ 2. Abrir app Tapo → cada cámara → Configuración → Ver IP actual              ║
+║ 3. Abrir C:\Users\Diana\reloj-mama\go2rtc.yaml                              ║
+║ 4. Cambiar las IPs en estas líneas:                                          ║
+║      camara1: rtsp://Camarasmama:romina2000@NUEVA_IP/stream1                 ║
+║      camara2: rtsp://Camarasmama:romina2000@NUEVA_IP/stream1                 ║
+║ 5. Guardar y reiniciar go2rtc (cerrar y abrir servidor.bat)                  ║
+║                                                                              ║
+║ IPs actuales (red de casa):                                                  ║
+║   camara1 → 192.168.1.49                                                     ║
+║   camara2 → 192.168.0.161                                                    ║
+╠══════════════════════════════════════════════════════════════════════════════╣
 ║ CÓMO ENTRAR A CONFIGURACIÓN DE FULLYKIOSK (tablet)                          ║
 ║ · Mantener presionado en la pantalla varios segundos (long press)            ║
 ║ · Contraseña por defecto: admin                                              ║
