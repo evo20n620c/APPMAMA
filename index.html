@@ -14,15 +14,19 @@
 ║   camara1_sub → stream2 (baja resolución - recomendado para tablet)          ║
 ║   camara2_sub → stream2                                                      ║
 ║                                                                              ║
-║ Versión actual: V1.3                                                         ║
+║ Versión actual: V1.2                                                         ║
 ║ Última actualización: Uso de mode=webrtc con permisos ampliados              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Reloj Familiar</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
@@ -32,9 +36,17 @@
             --font-soft: 'Quicksand', sans-serif;
             --font-msg: 'Caveat', cursive;
         }
-        #anti-burn-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transition: transform 1s ease-in-out; background: var(--bg); }
+        #anti-burn-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            transition: transform 1s ease-in-out; background: var(--bg);
+        }
         body, html { margin: 0; padding: 0; height: 100%; background: var(--bg); color: var(--text); overflow: hidden; font-family: var(--font-soft); }
-        .grid { display: grid; grid-template-columns: 50% 50%; grid-template-rows: 22% 70% 8%; height: 100vh; padding: 20px; box-sizing: border-box; gap: 15px; }
+        .grid {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-template-rows: 22% 70% 8%;
+            height: 100vh; padding: 20px; box-sizing: border-box; gap: 15px;
+        }
         .box { background: var(--card); border-radius: 40px; border: 1px solid var(--border); display: flex; position: relative; overflow: hidden; }
         .top-left-group { flex-direction: row; justify-content: space-evenly; align-items: center; padding: 10px 20px; }
         #hora { font-size: 5.5rem; font-weight: 400; line-height: 1; letter-spacing: -2px; color: var(--text); }
@@ -43,7 +55,15 @@
         #clima-temp { font-size: 4.5rem; font-weight: 400; color: var(--text); }
         .top-right-msg { background: transparent !important; border: none !important; justify-content: center; align-items: center; }
         #msg-arriba { font-family: var(--font-msg); text-align: center; max-width: 80%; transition: opacity 1s ease; }
-        .btn-llamar { position: absolute; top: 14px; right: 14px; width: 58px; height: 58px; border-radius: 50%; background: #5CB85C; border: none; cursor: pointer; font-size: 1.7rem; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(0,0,0,0.2); }
+        .btn-llamar {
+            position: absolute; top: 14px; right: 14px;
+            width: 58px; height: 58px; border-radius: 50%;
+            background: #5CB85C; border: none; cursor: pointer;
+            font-size: 1.7rem; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.2); text-decoration: none;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+        .btn-llamar:active { transform: scale(0.9); box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
         .left-column-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; }
         .bottom-left-agenda { padding: 35px; flex-direction: column; flex: 2; min-height: 0; }
         .agenda-evento { font-size: 1.4rem; font-weight: 500; color: var(--text); margin-bottom: 10px; display: flex; align-items: flex-start; gap: 15px; }
@@ -58,26 +78,50 @@
         .camaras-container { flex: 2; min-height: 0; display: flex; gap: 10px; }
         .camara-box { flex: 1; border-radius: 30px; border: 1px solid var(--border); overflow: hidden; background: var(--card); position: relative; }
         .camara-label { position: absolute; top: 0; left: 0; right: 0; text-align: center; font-size: 0.8rem; font-weight: 600; color: #fff; padding: 6px 0 10px; background: linear-gradient(rgba(0,0,0,0.55), transparent); }
-        .news-ticker { grid-column: span 2; background: var(--bg); border-radius: 50px; border: 1px solid var(--border); display: flex; align-items: center; overflow: hidden; white-space: nowrap; padding: 0 20px; }
-        .ticker-label { background: var(--accent); color: #fff; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; margin-right: 15px; text-transform: uppercase; }
-        #noticias-scroll { display: inline-block; padding-left: 100%; animation: ticker 160s linear infinite; font-size: 1.3rem; color: var(--dim); }
-        @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-100%, 0, 0); } }
-        body, html, #anti-burn-container, .box, .news-ticker, .trivia-box, .weather-divider { transition: background 2s ease, background-color 2s ease, color 2s ease, border-color 2s ease; }
-        body.modo-noche { --bg: #1E1510; --card: #2A1F14; --dim: #8B7355; --border: #3D2B1F; --text: #F0E6D3; }
-
-        .version-info {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #C4783A;
-            background: rgba(255,255,255,0.8);
-            padding: 5px 12px;
-            border-radius: 20px;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        .news-ticker {
+            grid-column: span 2;
+            background: var(--bg);
+            border-radius: 50px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 0 20px;
         }
+        #go2rtc-version {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: var(--dim);
+            flex-shrink: 0;
+            margin-right: 14px;
+        }
+        .ticker-label {
+            background: var(--accent);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        #noticias-scroll {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker 160s linear infinite;
+            font-size: 1.3rem;
+            color: var(--dim);
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        body, html, #anti-burn-container, .box, .news-ticker, .trivia-box, .weather-divider {
+            transition: background 2s ease, background-color 2s ease, color 2s ease, border-color 2s ease;
+        }
+        body.modo-noche { --bg: #1E1510; --card: #2A1F14; --dim: #8B7355; --border: #3D2B1F; --text: #F0E6D3; }
     </style>
 </head>
 <body>
@@ -98,16 +142,20 @@
         </div>
         <div class="bottom-right-container">
             <div class="paisaje-mini-box"><div class="layer active" id="capa1"></div><div class="layer" id="capa2"></div></div>
-            
+
+            <!-- ==================== CÁMARAS ==================== -->
             <div class="camaras-container">
+                <!-- Cámara 1 -->
                 <div class="camara-box">
-                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara1_sub&mode=webrtc" 
+                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara1_sub&mode=webrtc"
                             allow="autoplay; fullscreen; encrypted-media; camera; microphone"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 1</div>
                 </div>
+
+                <!-- Cámara 2 -->
                 <div class="camara-box">
-                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara2_sub&mode=webrtc" 
+                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara2_sub&mode=webrtc"
                             allow="autoplay; fullscreen; encrypted-media; camera; microphone"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 2</div>
@@ -115,27 +163,242 @@
             </div>
         </div>
         <div class="news-ticker">
+            <div id="go2rtc-version">go2rtc ...</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
     </div>
-
-    <!-- Versión visible - más grande y clara -->
-    <div class="version-info">V1.3</div>
 </div>
 
 <script>
-    // === TODO TU CÓDIGO JAVASCRIPT ANTERIOR VA AQUÍ ===
-    // (Mantengo el script completo que tenías)
     const AGENDA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv';
     const FRASES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
     const TRIVIA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub?output=csv';
     const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     const RSS_URL_2 = 'https://www.clarin.com/rss/lo-ultimo/';
 
-    // ... (el resto del script es el mismo que tenías antes)
+    async function fetchCSV(url) {
+        const urlConTs = url + '&t=' + Date.now();
+        const proxies = [
+            'https://corsproxy.io/?url=' + encodeURIComponent(urlConTs),
+            'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(urlConTs),
+            'https://thingproxy.freeboard.io/fetch/' + urlConTs,
+        ];
+        for (const proxyUrl of proxies) {
+            try {
+                const r = await fetch(proxyUrl, { signal: AbortSignal.timeout(12000) });
+                const text = await r.text();
+                if (r.ok && text.length > 10) return text;
+            } catch (_) {}
+        }
+        throw new Error('Todos los proxies fallaron');
+    }
 
-    // Copia aquí todo tu código <script> anterior desde async function fetchCSV hasta el final
+    function conReintentos(fn, seg = 10) {
+        const intentar = () => fn().catch(() => setTimeout(intentar, seg * 1000));
+        intentar();
+    }
+
+    let triviasExterna = [], triviaFase = 0, triviaActual = null;
+
+    function aplicarAntiBurn() {
+        const c = document.getElementById('anti-burn-container');
+        c.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
+    }
+
+    function titularesDesdeXML(xml) {
+        const doc = new DOMParser().parseFromString(xml, 'text/xml');
+        return [...doc.querySelectorAll('item')]
+            .map(i => (i.querySelector('title')?.textContent || '').split(' - ')[0])
+            .filter(Boolean).join(' • ');
+    }
+
+    async function cargarNoticias() {
+        try {
+            const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
+            const d = await r.json();
+            if (d.status === 'ok' && d.items?.length) {
+                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
+                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
+            }
+        } catch (_) {}
+
+        try {
+            const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL_2), { signal: AbortSignal.timeout(10000) });
+            const d = await r.json();
+            if (d.status === 'ok' && d.items?.length) {
+                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
+                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
+            }
+        } catch (_) {}
+    }
+
+    async function cargarTrivia() {
+        const text = await fetchCSV(TRIVIA_URL);
+        const filas = text.split(/\r?\n/).map(l => {
+            const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (c.length < 5) return null;
+            return {
+                p: c[0].replace(/"/g, '').trim(),
+                o: [`A) ${c[1].replace(/"/g,'').trim()}`, `B) ${c[2].replace(/"/g,'').trim()}`, `C) ${c[3].replace(/"/g,'').trim()}`],
+                r: c[4].replace(/"/g, '').trim()
+            };
+        }).filter(Boolean);
+        if (!filas.length) throw new Error('Trivia vacía');
+        triviasExterna = filas;
+    }
+
+    async function buscarImagenWiki(termino) {
+        for (const lang of ['es', 'en']) {
+            try {
+                const r = await fetch(`https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(termino)}`, { signal: AbortSignal.timeout(5000) });
+                const d = await r.json();
+                if (d.thumbnail?.source) return d.thumbnail.source;
+            } catch (_) {}
+        }
+        return null;
+    }
+
+    function mostrarTrivia() {
+        const content = document.getElementById('trivia-content');
+        if (!triviasExterna.length) return;
+        content.style.opacity = 0;
+        setTimeout(() => {
+            if (triviaFase === 0) {
+                triviaActual = triviasExterna[Math.floor(Math.random() * triviasExterna.length)];
+                triviaActual.imgUrl = null;
+                content.innerHTML = `
+                    <div style="text-align:left;">
+                        <div class="trivia-txt">${triviaActual.p}</div>
+                        <div style="margin-top:10px;">${triviaActual.o.map(o => `<div style="color:var(--dim);font-size:1.05rem;margin-bottom:7px;">${o}</div>`).join('')}</div>
+                    </div>`;
+                content.style.opacity = 1;
+                buscarImagenWiki(triviaActual.r).then(url => { triviaActual.imgUrl = url; });
+                triviaFase = 1;
+            } else {
+                const imgHtml = triviaActual.imgUrl
+                    ? `<img src="${triviaActual.imgUrl}" style="width:110px;height:110px;object-fit:cover;border-radius:14px;flex-shrink:0;" onerror="this.style.display='none'">`
+                    : '';
+                content.innerHTML = `
+                    <div style="display:flex;gap:16px;align-items:center;justify-content:center;width:100%;">
+                        ${imgHtml}
+                        <div class="trivia-res" style="font-size:1.8rem;">${triviaActual.r}</div>
+                    </div>`;
+                content.style.opacity = 1;
+                triviaFase = 0;
+            }
+        }, 500);
+    }
+
+    async function cargarAgenda() {
+        const text = await fetchCSV(AGENDA_URL);
+        const lineas = text.split(/\r?\n/);
+        const hoy = new Date();
+        let html = '';
+        for (let i = 0; i < 1; i++) {
+            const f = new Date(); f.setDate(hoy.getDate() + i);
+            const buscar = `${f.getDate().toString().padStart(2,'0')}/${(f.getMonth()+1).toString().padStart(2,'0')}`;
+            const lista = lineas
+                .filter(l => (l.split(',')[0] || '').includes(buscar))
+                .map(l => {
+                    const p = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                    return p[1] ? `<li class="agenda-evento">${p[1].replace(/"/g,'').trim()}</li>` : '';
+                }).join('');
+            html += `<div style="margin-bottom:20px">
+                <div style="font-size:1.1rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:10px">
+                    ${i===0?'HOY':'MAÑANA'} ${f.getDate()}/${f.getMonth()+1}
+                </div>
+                <ul style="list-style:none;padding:0">${lista || 'Sin actividades'}</ul>
+            </div>`;
+        }
+        document.getElementById('contenedor-agenda').innerHTML = html;
+        aplicarAntiBurn();
+    }
+
+    async function actualizarMensaje() {
+        const csv = await fetchCSV(FRASES_URL);
+        const min = new Date().getHours() * 60 + new Date().getMinutes();
+        let txt = '';
+        csv.split(/\r?\n/).forEach(l => {
+            const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+            if (c.length < 3) return;
+            const desde = parseInt(c[0].split(':')[0])*60 + parseInt(c[0].split(':')[1]||0);
+            const hasta = parseInt(c[1].split(':')[0])*60 + parseInt(c[1].split(':')[1]||0);
+            if (min >= desde && min < hasta) txt = c[2].replace(/"/g,'').trim();
+        });
+        const msg = document.getElementById('msg-arriba');
+        msg.style.opacity = 0;
+        setTimeout(() => {
+            msg.innerHTML = txt || '';
+            msg.style.color = '#C4783A';
+            msg.style.fontSize = '2.6rem';
+            msg.style.opacity = 1;
+        }, 800);
+    }
+
+    function actualizarModo() {
+        const h = new Date().getHours();
+        document.body.classList.toggle('modo-noche', h < 8 || h >= 20);
+    }
+
+    function reloj() {
+        const ahora = new Date();
+        document.getElementById('hora').textContent =
+            ahora.getHours().toString().padStart(2,'0') + ':' + ahora.getMinutes().toString().padStart(2,'0');
+        document.getElementById('fecha').textContent =
+            ahora.toLocaleDateString('es-AR', { weekday:'short', day:'numeric', month:'short', year:'numeric' }).replace('.','');
+    }
+
+    async function clima() {
+        try {
+            const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=-34.61&longitude=-58.43&current=temperature_2m,weather_code');
+            const d = await r.json();
+            document.getElementById('clima-temp').textContent = Math.round(d.current.temperature_2m) + '°';
+            const wc = d.current.weather_code;
+            const emoji = wc === 0 ? '☀️' : wc <= 2 ? '🌤️' : wc === 3 ? '☁️' : wc <= 49 ? '🌫️' : wc <= 67 ? '🌧️' : wc <= 77 ? '❄️' : wc <= 82 ? '🌦️' : '⛈️';
+            document.getElementById('clima-icon').textContent = emoji;
+        } catch (_) {}
+    }
+
+    let alternar = true;
+    function actualizarPaisaje() {
+        const c1 = document.getElementById('capa1'), c2 = document.getElementById('capa2');
+        const t = alternar ? c2 : c1, o = alternar ? c1 : c2;
+        const url = `https://loremflickr.com/1000/800/mountain,forest,lake?random=${Date.now()}`;
+        const img = new Image();
+        img.src = url;
+        img.onload = () => { t.style.backgroundImage = `url('${url}')`; t.classList.add('active'); o.classList.remove('active'); alternar = !alternar; };
+    }
+
+    async function fetchGo2rtcVersion() {
+        try {
+            const r = await fetch('http://192.168.1.26:1984/api', { signal: AbortSignal.timeout(5000) });
+            const d = await r.json();
+            document.getElementById('go2rtc-version').textContent = 'go2rtc v' + (d.version || '?');
+        } catch (_) {
+            document.getElementById('go2rtc-version').textContent = 'go2rtc ✗';
+        }
+    }
+
+    // ── INICIO ───────────────────────────────────────────────────────────────
+    actualizarModo();
+    reloj();
+    clima();
+    actualizarPaisaje();
+    fetchGo2rtcVersion();
+    conReintentos(cargarAgenda);
+    conReintentos(actualizarMensaje);
+    conReintentos(() => cargarTrivia().then(mostrarTrivia));
+    conReintentos(cargarNoticias);
+
+    setInterval(actualizarModo, 60000);
+    setInterval(reloj, 1000);
+    setInterval(clima, 300000);
+    setInterval(cargarAgenda, 60000);
+    setInterval(actualizarMensaje, 30000);
+    setInterval(mostrarTrivia, 8000);
+    setInterval(actualizarPaisaje, 30000);
+    setInterval(cargarNoticias, 600000);
 </script>
 </body>
 </html>
