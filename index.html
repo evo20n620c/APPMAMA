@@ -147,17 +147,13 @@
             <div class="camaras-container">
                 <!-- Cámara 1 -->
                 <div class="camara-box">
-                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara1_sub&mode=webrtc"
-                            allow="autoplay; fullscreen; encrypted-media; camera; microphone"
-                            style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+                    <video id="cam1" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;"></video>
                     <div class="camara-label">Cámara 1</div>
                 </div>
 
                 <!-- Cámara 2 -->
                 <div class="camara-box">
-                    <iframe src="http://192.168.1.26:1984/stream.html?src=camara2_sub&mode=webrtc"
-                            allow="autoplay; fullscreen; encrypted-media; camera; microphone"
-                            style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
+                    <video id="cam2" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;"></video>
                     <div class="camara-label">Cámara 2</div>
                 </div>
             </div>
@@ -370,11 +366,41 @@
         img.onload = () => { t.style.backgroundImage = `url('${url}')`; t.classList.add('active'); o.classList.remove('active'); alternar = !alternar; };
     }
 
+    // ── CÁMARAS WEBRTC ───────────────────────────────────────────────────────
+    function iniciarCamara(videoEl, src) {
+        const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+        pc.addTransceiver('video', { direction: 'recvonly' });
+        pc.addTransceiver('audio', { direction: 'recvonly' });
+        pc.ontrack = ev => { if (ev.streams[0]) videoEl.srcObject = ev.streams[0]; };
+
+        const ws = new WebSocket('ws://192.168.1.26:1984/api/ws?src=' + src);
+        ws.onopen = async () => {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            ws.send(JSON.stringify({ type: 'webrtc/offer', value: offer.sdp }));
+        };
+        ws.onmessage = async ev => {
+            const msg = JSON.parse(ev.data);
+            if (msg.type === 'webrtc/answer') {
+                await pc.setRemoteDescription({ type: 'answer', sdp: msg.value });
+            } else if (msg.type === 'webrtc/candidate' && msg.value) {
+                await pc.addIceCandidate({ candidate: msg.value, sdpMid: '0' });
+            }
+        };
+        pc.onicecandidate = ev => {
+            if (ev.candidate && ws.readyState === WebSocket.OPEN)
+                ws.send(JSON.stringify({ type: 'webrtc/candidate', value: ev.candidate.candidate }));
+        };
+        ws.onclose = () => { pc.close(); setTimeout(() => iniciarCamara(videoEl, src), 5000); };
+    }
+
     // ── INICIO ───────────────────────────────────────────────────────────────
     actualizarModo();
     reloj();
     clima();
     actualizarPaisaje();
+    iniciarCamara(document.getElementById('cam1'), 'camara1_sub');
+    iniciarCamara(document.getElementById('cam2'), 'camara2_sub');
     conReintentos(cargarAgenda);
     conReintentos(actualizarMensaje);
     conReintentos(() => cargarTrivia().then(mostrarTrivia));
