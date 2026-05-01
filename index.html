@@ -2,18 +2,8 @@
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║ RELOJ FAMILIAR - DOCUMENTACIÓN ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
-║ ARCHIVOS DEL PROYECTO (carpeta: C:\Users\Diana\reloj-mama\) ║
-║ ├── reloj.html → este archivo, toda la app en un solo HTML ║
-║ └── go2rtc.yaml → configuración del servidor de cámaras ║
-╠══════════════════════════════════════════════════════════════════════════════╣
-║ GOOGLE SHEETS (datos viven en la nube, se editan desde Drive) ║
-║ · Agenda → columna A: fecha (DD/MM), columna B: evento ║
-║ https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub ║
-║ · Frases → col A: hora desde (HH:MM), col B: hora hasta, col C: texto ║
-║ https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub ║
-║ · Trivia → col A: pregunta, B-D: opciones A/B/C, col E: respuesta ║
-║ https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub ║
-║ Nota: estos son los links de publicación (CSV). Para editar, abrí Google Drive y buscá las hojas por nombre. ║
+║ GOOGLE SHEETS (datos viven en la nube) ║
+║ · Agenda, Frases y Trivia en Google Sheets (publicados como CSV) ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 -->
 
@@ -25,7 +15,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Reloj Familiar Premium - Noticias Legibles</title>
+    <title>Reloj Familiar</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Quicksand:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -137,7 +127,7 @@
             <div class="camaras-container">
                 <!-- Cámara 1 -->
                 <div class="camara-box">
-                    <iframe src="rtsp://Camarasmama:romina2000@192.168.1.49:554/stream2" 
+                    <iframe src="http://192.168.1.49:554/stream2.m3u8" 
                             allow="autoplay; fullscreen; encrypted-media"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 1</div>
@@ -145,7 +135,7 @@
 
                 <!-- Cámara 2 -->
                 <div class="camara-box">
-                    <iframe src="rtsp://Camarasmama:romina2000@192.168.0.161:554/stream2" 
+                    <iframe src="http://192.168.0.161:554/stream2.m3u8" 
                             allow="autoplay; fullscreen; encrypted-media"
                             style="position:absolute;inset:0;width:100%;height:100%;border:none;"></iframe>
                     <div class="camara-label">Cámara 2</div>
@@ -160,13 +150,14 @@
         </div>
     </div>
 </div>
+
 <script>
     const AGENDA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv';
     const FRASES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
     const TRIVIA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub?output=csv';
     const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     const RSS_URL_2 = 'https://www.clarin.com/rss/lo-ultimo/';
-    
+
     async function fetchCSV(url) {
         const urlConTs = url + '&t=' + Date.now();
         const proxies = [
@@ -196,7 +187,6 @@
         c.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
     }
 
-    // ── NOTICIAS ────────────────────────────────────────────────────────────
     function titularesDesdeXML(xml) {
         const doc = new DOMParser().parseFromString(xml, 'text/xml');
         return [...doc.querySelectorAll('item')]
@@ -224,7 +214,6 @@
         } catch (_) {}
     }
 
-    // ── TRIVIA ──────────────────────────────────────────────────────────────
     async function cargarTrivia() {
         const text = await fetchCSV(TRIVIA_URL);
         const filas = text.split(/\r?\n/).map(l => {
@@ -282,7 +271,6 @@
         }, 500);
     }
 
-    // ── AGENDA ──────────────────────────────────────────────────────────────
     async function cargarAgenda() {
         const text = await fetchCSV(AGENDA_URL);
         const lineas = text.split(/\r?\n/);
@@ -308,7 +296,6 @@
         aplicarAntiBurn();
     }
 
-    // ── FRASES ──────────────────────────────────────────────────────────────
     async function actualizarMensaje() {
         const csv = await fetchCSV(FRASES_URL);
         const min = new Date().getHours() * 60 + new Date().getMinutes();
@@ -330,13 +317,11 @@
         }, 800);
     }
 
-    // ── MODO DÍA / NOCHE ────────────────────────────────────────────────────
     function actualizarModo() {
         const h = new Date().getHours();
         document.body.classList.toggle('modo-noche', h < 8 || h >= 20);
     }
 
-    // ── RELOJ Y CLIMA ───────────────────────────────────────────────────────
     function reloj() {
         const ahora = new Date();
         document.getElementById('hora').textContent =
@@ -356,7 +341,6 @@
         } catch (_) {}
     }
 
-    // ── PAISAJE ─────────────────────────────────────────────────────────────
     let alternar = true;
     function actualizarPaisaje() {
         const c1 = document.getElementById('capa1'), c2 = document.getElementById('capa2');
