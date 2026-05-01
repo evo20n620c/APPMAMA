@@ -205,6 +205,11 @@
 </div>
 
 <script>
+    // ── CONFIGURACIÓN ─────────────────────────────────────────────────────────
+    // Si la tablet está en otra red (casa de mamá), usar la IP de Tailscale
+    // de la PC servidor. Si está en la misma red, usar 192.168.1.26
+    const GO2RTC = 'http://192.168.1.26:1984';
+
     const AGENDA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv';
     const FRASES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
     const TRIVIA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTtMdkYueUYgWcnwisUPstM2S4o2VTMbAyZ48QIu4eYWXvK0U9JGfmn0VyT3axG_7jgEmixm6Lzhg_E/pub?output=csv';
@@ -439,7 +444,7 @@
         pc.addTransceiver('audio', { direction: 'recvonly' });
         pc.ontrack = ev => { if (ev.streams[0]) videoEl.srcObject = ev.streams[0]; };
 
-        const ws = new WebSocket('ws://192.168.1.26:1984/api/ws?src=' + src);
+        const ws = new WebSocket(GO2RTC.replace('http', 'ws') + '/api/ws?src=' + src);
         ws.onopen = async () => {
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
