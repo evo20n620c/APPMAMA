@@ -141,7 +141,7 @@
         .weather-divider { width: 60%; height: 1px; background: var(--border); margin: 2px 0; }
         #clima-temp { font-size: 4.5rem; font-weight: 400; color: var(--text); }
         .top-right-msg { background: transparent !important; border: none !important; justify-content: center; align-items: center; grid-area: msg; }
-        #msg-arriba { font-family: var(--font-msg); text-align: center; max-width: 80%; transition: opacity 1s ease; }
+        #msg-arriba { font-family: var(--font-msg); text-align: center; max-width: 95%; line-height: 1.1; transition: opacity 1s ease; overflow: visible; }
         .btn-llamar {
             position: absolute; top: 14px; right: 14px;
             width: 58px; height: 58px; border-radius: 50%;
@@ -153,7 +153,7 @@
         .btn-llamar:active { transform: scale(0.9); box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
         .left-column-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: agenda; }
         .bottom-left-agenda { padding: 18px 22px; flex-direction: column; flex: 1.5; min-height: 0; }
-        .agenda-evento { font-size: 4.2rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
+        .agenda-evento { font-size: 2.2rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
         .agenda-evento::before { content: ""; min-width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 7px; }
         .bottom-right-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: cameras; }
         .paisaje-mini-box { flex: 3; min-height: 0; background: #6B5240; border-radius: 40px; overflow: hidden; border: 1px solid var(--border); position: relative; }
@@ -388,7 +388,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             .join('');
 
         document.getElementById('contenedor-agenda').innerHTML = `
-            <div style="font-size:3.4rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
+            <div style="font-size:1.4rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
                 ${hoyDia}
             </div>
             <ul style="list-style:none;padding:0">${lista || 'Sin actividades hoy'}</ul>`;
@@ -412,6 +412,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             msg.innerHTML = txt || '';
             msg.style.color = '#C4783A';
             msg.style.fontSize = '5.2rem';
+            msg.style.lineHeight = '1.1';
             msg.style.opacity = 1;
         }, 800);
     }
