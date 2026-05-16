@@ -365,9 +365,9 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         el.style.opacity = 0;
         setTimeout(() => {
             el.innerHTML = `
-                <div style="font-size:0.7rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">${item.tipo} · ${item.autor}</div>
-                <div style="font-size:0.75rem;color:var(--dim);font-style:italic;margin-bottom:10px;">${item.titulo}</div>
-                <div style="font-family:var(--font-msg);font-size:1.25rem;color:var(--text);line-height:1.55;white-space:pre-line;">${item.texto}</div>`;
+                <div style="font-size:1.4rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">${item.tipo} · ${item.autor}</div>
+                <div style="font-size:1.5rem;color:var(--dim);font-style:italic;margin-bottom:10px;">${item.titulo}</div>
+                <div style="font-family:var(--font-msg);font-size:2.5rem;color:var(--text);line-height:1.55;white-space:pre-line;">${item.texto}</div>`;
             el.style.opacity = 1;
         }, 500);
     }
