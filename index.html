@@ -396,7 +396,6 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             </div>
             <ul style="list-style:none;padding:0">${lista || 'Sin actividades hoy'}</ul>`;
         aplicarAntiBurn();
-        iniciarScrollAgenda();
     }
 
     async function actualizarMensaje() {
@@ -535,21 +534,18 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         ws.onclose = () => { pc.close(); setTimeout(() => iniciarCamara(videoEl, src), 5000); };
     }
 
-    let scrollAgendaTimer = null;
     function iniciarScrollAgenda() {
-        clearTimeout(scrollAgendaTimer);
         const caja = document.getElementById('caja-agenda');
-        if (caja.querySelectorAll('.agenda-evento').length <= 7) return;
-        function ciclo() {
-            scrollAgendaTimer = setTimeout(() => {
-                caja.scrollTo({ top: caja.scrollHeight, behavior: 'smooth' });
-                scrollAgendaTimer = setTimeout(() => {
-                    caja.scrollTo({ top: 0, behavior: 'smooth' });
-                    ciclo();
-                }, 40000);
-            }, 60000);
+        function bajar() {
+            if (caja.querySelectorAll('.agenda-evento').length <= 7) { setTimeout(bajar, 60000); return; }
+            caja.scrollTo({ top: caja.scrollHeight, behavior: 'smooth' });
+            setTimeout(subir, 40000);
         }
-        ciclo();
+        function subir() {
+            caja.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(bajar, 60000);
+        }
+        setTimeout(bajar, 60000);
     }
 
     // ── INICIO ───────────────────────────────────────────────────────────────
@@ -570,6 +566,8 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     mostrarLetra();
     conReintentos(cargarNoticias);
 
+    iniciarScrollAgenda();
+    setInterval(aplicarAntiBurn, 30000);
     setInterval(actualizarModo, 60000);
     setInterval(reloj, 1000);
     setInterval(clima, 300000);
