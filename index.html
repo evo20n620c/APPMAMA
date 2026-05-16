@@ -135,10 +135,10 @@
             height: 100vh; padding: 20px; box-sizing: border-box; gap: 15px;
         }
         .box { background: var(--card); border-radius: 40px; border: 1px solid var(--border); display: flex; position: relative; overflow: hidden; }
-        .top-left-group { flex-direction: row; justify-content: space-evenly; align-items: center; padding: 8px; gap: 0; grid-area: clock; }
+        .top-left-group { flex-direction: column; justify-content: space-between; align-items: center; padding: 8px; gap: 0; grid-area: clock; }
         #hora { font-size: 5.5rem; font-weight: 400; line-height: 1; letter-spacing: -2px; color: var(--text); }
-        #fecha { font-size: 1.1rem; font-weight: 500; color: var(--dim); margin-top: 8px; }
-        .weather-divider { width: 1px; height: 50%; background: var(--border); margin: 0 8px; }
+        #fecha { font-size: 3.3rem; font-weight: 500; color: var(--dim); }
+        .weather-divider { width: 1px; align-self: stretch; background: var(--border); margin: 0 8px; }
         #clima-temp { font-size: 4.5rem; font-weight: 400; color: var(--text); }
         .top-right-msg { background: transparent !important; border: none !important; justify-content: center; align-items: center; grid-area: msg; }
         #msg-arriba { font-family: var(--font-msg); text-align: center; max-width: 95%; line-height: 1.1; transition: opacity 1s ease; overflow: visible; }
@@ -214,9 +214,12 @@
 <div id="anti-burn-container">
     <div class="grid">
         <div class="box top-left-group">
-            <div style="text-align: center;"><div id="hora">--:--</div><div id="fecha">...</div><div id="feriado" style="display:none;font-size:1.3rem;color:var(--accent);font-weight:700;margin-top:8px;">🎉</div></div>
-            <div class="weather-divider"></div>
-            <div style="display: flex; flex-direction: row; align-items: center; gap: 8px;"><div id="clima-icon" style="font-size: 3.5rem; line-height: 1;">🌡️</div><div id="clima-temp">--°</div></div>
+            <div style="display:flex;flex-direction:row;justify-content:space-evenly;align-items:center;flex:1;width:100%;">
+                <div style="text-align:center;"><div id="hora">--:--</div><div id="feriado" style="display:none;font-size:1.3rem;color:var(--accent);font-weight:700;margin-top:4px;">🎉</div></div>
+                <div class="weather-divider"></div>
+                <div style="display:flex;flex-direction:row;align-items:center;gap:8px;"><div id="clima-icon" style="font-size:3.5rem;line-height:1;">🌡️</div><div id="clima-temp">--°</div></div>
+            </div>
+            <div id="fecha" style="text-align:center;width:100%;font-size:3.3rem;font-weight:500;color:var(--dim);padding:4px 0;">...</div>
         </div>
         <div class="box top-right-msg">
             <div id="msg-arriba">Cargando...</div>
