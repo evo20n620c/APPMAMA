@@ -152,7 +152,8 @@
         }
         .btn-llamar:active { transform: scale(0.9); box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
         .left-column-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: agenda; }
-        .bottom-left-agenda { padding: 18px 22px; flex-direction: column; flex: 1.5; min-height: 0; }
+        .bottom-left-agenda { padding: 18px 22px; flex-direction: column; flex: 1.5; min-height: 0; overflow-y: auto; scrollbar-width: none; }
+        .bottom-left-agenda::-webkit-scrollbar { display: none; }
         .agenda-evento { font-size: 1.5rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
         .agenda-evento::before { content: ""; min-width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 7px; }
         .bottom-right-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: cameras; }
@@ -187,7 +188,7 @@
             padding: 5px 15px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 1.8rem;
             margin-right: 15px;
             text-transform: uppercase;
             flex-shrink: 0;
@@ -388,11 +389,12 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             .join('');
 
         document.getElementById('contenedor-agenda').innerHTML = `
-            <div style="font-size:1rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
+            <div style="font-size:1.2rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
                 ${hoyDia}
             </div>
             <ul style="list-style:none;padding:0">${lista || 'Sin actividades hoy'}</ul>`;
         aplicarAntiBurn();
+        iniciarScrollAgenda();
     }
 
     async function actualizarMensaje() {
@@ -529,6 +531,23 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
                 ws.send(JSON.stringify({ type: 'webrtc/candidate', value: ev.candidate.candidate }));
         };
         ws.onclose = () => { pc.close(); setTimeout(() => iniciarCamara(videoEl, src), 5000); };
+    }
+
+    let scrollAgendaTimer = null;
+    function iniciarScrollAgenda() {
+        clearTimeout(scrollAgendaTimer);
+        const caja = document.getElementById('caja-agenda');
+        if (caja.querySelectorAll('.agenda-evento').length <= 7) return;
+        function ciclo() {
+            scrollAgendaTimer = setTimeout(() => {
+                caja.scrollTo({ top: caja.scrollHeight, behavior: 'smooth' });
+                scrollAgendaTimer = setTimeout(() => {
+                    caja.scrollTo({ top: 0, behavior: 'smooth' });
+                    ciclo();
+                }, 40000);
+            }, 60000);
+        }
+        ciclo();
     }
 
     // ── INICIO ───────────────────────────────────────────────────────────────
