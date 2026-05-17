@@ -254,7 +254,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">3.9</div>
+            <div id="go2rtc-version">4.0</div>
             <div id="noticias-scroll">...</div>
         </div>
     </div>
@@ -514,18 +514,27 @@
 
     async function cargarImagenesBing() {
         try {
-            const bingUrl = 'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=es-ES';
-            const r = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(bingUrl), { signal: AbortSignal.timeout(10000) });
-            const wrapper = await r.json();
-            const d = JSON.parse(wrapper.contents);
-            if (d.images?.length) {
-                bingImagenes = d.images.map(img => {
-                    const copyright = img.copyright || '';
-                    const titulo = img.title || '';
-                    const lugar = copyright.split(' (©')[0].split(' ©')[0].trim() || titulo || 'Foto del día';
-                    return { url: 'https://www.bing.com' + img.url, lugar };
-                }).sort(() => Math.random() - 0.5);
-            }
+            const markets = ['es-ES', 'en-US', 'en-GB', 'zh-CN'];
+            const resultados = await Promise.all(markets.map(mkt =>
+                fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(
+                    `https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&mkt=${mkt}`
+                ), { signal: AbortSignal.timeout(10000) })
+                .then(r => r.json()).then(w => JSON.parse(w.contents))
+                .catch(() => ({ images: [] }))
+            ));
+            const vistas = new Set();
+            const fotosBing = resultados.flatMap(d => (d.images || []).map(img => {
+                const copyright = img.copyright || '';
+                const lugar = copyright.split(' (©')[0].split(' ©')[0].trim() || img.title || 'Foto del día';
+                return { url: 'https://www.bing.com' + img.url, lugar };
+            })).filter(f => !vistas.has(f.url) && vistas.add(f.url));
+
+            const fotosPicsum = Array.from({ length: 25 }, () => ({
+                url: `https://picsum.photos/seed/${Math.random().toString(36).slice(2)}/1920/1080`,
+                lugar: 'Foto del mundo'
+            }));
+
+            bingImagenes = [...fotosBing, ...fotosPicsum].sort(() => Math.random() - 0.5);
         } catch (_) {}
     }
 
