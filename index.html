@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">3.1</div>
+            <div id="go2rtc-version">3.2</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -437,8 +437,24 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     }
 
     async function actualizarMensaje() {
+        const h = new Date().getHours();
+        const msg = document.getElementById('msg-arriba');
+        msg.style.opacity = 0;
+
+        if (h >= 22) {
+            setTimeout(() => {
+                msg.innerHTML = 'Es de noche, hablamos despacito para no molestar a los vecinos 🌙';
+                msg.style.color = '#E91E8C';
+                msg.style.fontSize = '5.2rem';
+                msg.style.lineHeight = '1.1';
+                msg.style.fontFamily = 'var(--font-msg)';
+                msg.style.opacity = 1;
+            }, 800);
+            return;
+        }
+
         const csv = await fetchCSV(FRASES_URL);
-        const min = new Date().getHours() * 60 + new Date().getMinutes();
+        const min = h * 60 + new Date().getMinutes();
         let txt = '';
         csv.split(/\r?\n/).forEach(l => {
             const c = l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
@@ -447,13 +463,12 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             const hasta = parseInt(c[1].split(':')[0])*60 + parseInt(c[1].split(':')[1]||0);
             if (min >= desde && min < hasta) txt = c[2].replace(/"/g,'').trim();
         });
-        const msg = document.getElementById('msg-arriba');
-        msg.style.opacity = 0;
         setTimeout(() => {
             msg.innerHTML = txt || '';
             msg.style.color = '#C4783A';
             msg.style.fontSize = '5.2rem';
             msg.style.lineHeight = '1.1';
+            msg.style.fontFamily = '';
             msg.style.opacity = 1;
         }, 800);
     }
