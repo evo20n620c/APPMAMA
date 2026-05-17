@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">3.0</div>
+            <div id="go2rtc-version">3.1</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -512,8 +512,8 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
 
         let url, lugar = 'Foto del día';
         if (h >= 20) {
-            url = `https://loremflickr.com/1200/800/sleeping,animals,cute?random=${++animalIdx}`;
-            lugar = 'Animalitos durmiendo 🐾';
+            url = `https://loremflickr.com/1200/800/cat,sleeping?random=${++animalIdx}`;
+            lugar = 'Gatitos durmiendo 🐱';
         } else if (bingImagenes.length) {
             const bi = bingImagenes[bingIdx % bingImagenes.length];
             url = bi.url; lugar = bi.lugar || 'Foto del día'; bingIdx++;
