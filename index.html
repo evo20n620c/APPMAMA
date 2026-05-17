@@ -226,7 +226,6 @@
         </div>
         <div class="left-column-container">
             <div id="caja-agenda" class="box bottom-left-agenda"><div id="contenedor-agenda"></div></div>
-            <div class="letras-box"><div id="letras-content" style="transition: opacity 0.5s;"></div></div>
         </div>
         <div class="bottom-right-container">
             <div class="paisaje-mini-box">
@@ -251,9 +250,8 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">3.3</div>
-            <div class="ticker-label">Noticias</div>
-            <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
+            <div id="go2rtc-version">3.4</div>
+            <div id="noticias-scroll">...</div>
         </div>
     </div>
 </div>
@@ -266,8 +264,6 @@
 
     const AGENDA_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR7-WKumAlyEyQXUD9I-5qhxn0vBbI6M238FwuhctONAQfcsmKhwAIfO5gLbnZhiild3nqmRR-2n9mo/pub?output=csv&gid=1979695949';
     const FRASES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQsVTl_DwnvHg14G_rV5iUFOHal3B4w3llcCZsZwTNMh7uvx8YXdctdWXX2nbRVRpxizkZPKb665nKo/pub?output=csv';
-const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
-    const RSS_URL_2 = 'https://www.clarin.com/rss/lo-ultimo/';
 
     async function fetchCSV(url) {
         const urlConTs = url + '&t=' + Date.now();
@@ -328,18 +324,9 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         { tipo:"Canción", autor:"Leonardo Favio", titulo:"Quiero",
           texto:"Quiero que me quieras\ncomo yo te quiero a ti.\nQuiero que me digas\nque me amarás hasta el fin.\nQuiero, quiero, quiero\ntu amor no más." },
     ];
-    let letraIdx = 0;
-
     function aplicarAntiBurn() {
         const c = document.getElementById('anti-burn-container');
         c.style.transform = `translate(${Math.random()*4-2}px, ${Math.random()*4-2}px)`;
-    }
-
-    function titularesDesdeXML(xml) {
-        const doc = new DOMParser().parseFromString(xml, 'text/xml');
-        return [...doc.querySelectorAll('item')]
-            .map(i => (i.querySelector('title')?.textContent || '').split(' - ')[0])
-            .filter(Boolean).join(' • ');
     }
 
     const MSG_DESCANSO = 'Descansamos  ✨  Si nos despertamos, respiramos profundo 3 veces, inhalando y exhalando profundo.  Nos relajamos.  Y dormimos.  🌙  ';
@@ -347,55 +334,27 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     function actualizarTicker() {
         const h = new Date().getHours();
         const scroll = document.getElementById('noticias-scroll');
-        const label = document.querySelector('.ticker-label');
         if (h >= 20) {
             scroll.textContent = MSG_DESCANSO;
             scroll.style.color = '#E91E8C';
             scroll.style.animationDuration = '250s';
-            scroll.style.fontFamily = 'var(--font-msg)';
+            scroll.style.fontFamily = "'Caveat', cursive";
             scroll.style.fontSize = '5.7rem';
-            if (label) label.style.display = 'none';
         } else {
             scroll.style.color = '';
-            scroll.style.animationDuration = '160s';
-            scroll.style.fontFamily = '';
+            scroll.style.animationDuration = '700s';
+            scroll.style.fontFamily = "'Caveat', cursive";
             scroll.style.fontSize = '';
-            if (label) label.style.display = '';
         }
     }
 
-    async function cargarNoticias() {
+    function cargarLetrasEnTicker() {
         if (new Date().getHours() >= 20) { actualizarTicker(); return; }
-        try {
-            const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
-            const d = await r.json();
-            if (d.status === 'ok' && d.items?.length) {
-                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
-                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
-            }
-        } catch (_) {}
-
-        try {
-            const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL_2), { signal: AbortSignal.timeout(10000) });
-            const d = await r.json();
-            if (d.status === 'ok' && d.items?.length) {
-                const t = d.items.map(i => (i.title || '').split(' - ')[0]).filter(Boolean).join(' • ');
-                if (t) { document.getElementById('noticias-scroll').textContent = t + ' • '; return; }
-            }
-        } catch (_) {}
-    }
-
-    function mostrarLetra() {
-        const el = document.getElementById('letras-content');
-        const item = LETRAS[letraIdx % LETRAS.length];
-        letraIdx++;
-        el.style.opacity = 0;
-        setTimeout(() => {
-            el.innerHTML = `
-                <div style="font-size:2.1rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">${item.tipo} · ${item.autor} <span style="font-style:italic;color:var(--dim);font-weight:400;text-transform:none;letter-spacing:0;">${item.titulo}</span></div>
-                <div style="font-family:var(--font-msg);font-size:2.5rem;color:var(--text);line-height:1.55;white-space:pre-line;max-height:15.5rem;overflow:hidden;">${item.texto}</div>`;
-            el.style.opacity = 1;
-        }, 500);
+        const texto = LETRAS.map(l => `${l.autor}  —  ${l.titulo}  ·  ${l.texto.replace(/\n/g, '  ')}`).join('     ✦     ');
+        const scroll = document.getElementById('noticias-scroll');
+        scroll.textContent = texto + '     ✦     ';
+        scroll.style.animationDuration = '700s';
+        scroll.style.fontFamily = "'Caveat', cursive";
     }
 
     async function cargarAgenda() {
@@ -623,8 +582,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     iniciarCamara(document.getElementById('cam2'), 'camara2_sub');
     conReintentos(cargarAgenda);
     conReintentos(actualizarMensaje);
-    mostrarLetra();
-    conReintentos(cargarNoticias);
+    cargarLetrasEnTicker();
     actualizarTicker();
 
     iniciarScrollAgenda();
@@ -635,9 +593,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     setInterval(clima, 300000);
     setInterval(cargarAgenda, 60000);
     setInterval(actualizarMensaje, 30000);
-    setInterval(mostrarLetra, 28000);
     setInterval(actualizarPaisaje, 30000);
-    setInterval(cargarNoticias, 600000);
 </script>
 </body>
 </html>
