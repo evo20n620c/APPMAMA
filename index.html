@@ -157,7 +157,7 @@
         .agenda-evento { font-size: 2.25rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
         .agenda-evento::before { content: ""; min-width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 7px; }
         .bottom-right-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: cameras; }
-        .paisaje-mini-box { flex: 3; min-height: 0; background: #6B5240; border-radius: 40px; overflow: hidden; border: 1px solid var(--border); position: relative; }
+        .paisaje-mini-box { flex: 3; min-height: 0; background: #C4AE97; border-radius: 40px; overflow: hidden; border: 1px solid var(--border); position: relative; }
         .layer { position: absolute; width: 100%; height: 100%; transition: opacity 2s; opacity: 0; background-size: cover; background-position: center; }
         .layer.active { opacity: 1; }
         .letras-box { flex: 1.5; min-height: 0; background: linear-gradient(145deg, var(--card), var(--bg)); border-radius: 40px; border: 1px solid var(--border); padding: 20px 26px; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">2.6</div>
+            <div id="go2rtc-version">2.7</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -350,12 +350,16 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         const label = document.querySelector('.ticker-label');
         if (h >= 20) {
             scroll.textContent = MSG_DESCANSO;
-            scroll.style.color = '#FFB6C1';
+            scroll.style.color = '#E91E8C';
             scroll.style.animationDuration = '250s';
+            scroll.style.fontFamily = 'var(--font-msg)';
+            scroll.style.fontSize = '3.8rem';
             if (label) label.style.display = 'none';
         } else {
             scroll.style.color = '';
             scroll.style.animationDuration = '160s';
+            scroll.style.fontFamily = '';
+            scroll.style.fontSize = '';
             if (label) label.style.display = '';
         }
     }
