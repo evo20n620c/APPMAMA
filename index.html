@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">2.8</div>
+            <div id="go2rtc-version">2.9</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -461,6 +461,8 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     function actualizarModo() {
         const h = new Date().getHours();
         document.body.classList.toggle('modo-noche', h < 8 || h >= 20);
+        const camaras = document.querySelector('.camaras-container');
+        if (camaras) camaras.style.display = (h >= 22) ? 'none' : '';
     }
 
     function reloj() {
