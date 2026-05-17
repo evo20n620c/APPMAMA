@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">2.7</div>
+            <div id="go2rtc-version">2.8</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -342,7 +342,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             .filter(Boolean).join(' • ');
     }
 
-    const MSG_DESCANSO = 'DESCANSAMOS  ✨  Si nos despertamos, respiramos profundo 3 veces, inhalando y exhalando profundo.  Nos relajamos.  Y dormimos.  🌙  ';
+    const MSG_DESCANSO = 'Descansamos  ✨  Si nos despertamos, respiramos profundo 3 veces, inhalando y exhalando profundo.  Nos relajamos.  Y dormimos.  🌙  ';
 
     function actualizarTicker() {
         const h = new Date().getHours();
@@ -353,7 +353,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             scroll.style.color = '#E91E8C';
             scroll.style.animationDuration = '250s';
             scroll.style.fontFamily = 'var(--font-msg)';
-            scroll.style.fontSize = '3.8rem';
+            scroll.style.fontSize = '5.7rem';
             if (label) label.style.display = 'none';
         } else {
             scroll.style.color = '';
