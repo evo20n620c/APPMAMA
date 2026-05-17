@@ -379,10 +379,25 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         const text = await fetchCSV(AGENDA_URL);
         const diasSemana = ['DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO'];
         const hoyDia = diasSemana[new Date().getDay()];
+        const ahora = new Date();
+        const minActual = ahora.getHours() * 60 + ahora.getMinutes();
+
+        function parsearMin(str) {
+            const p = str.trim().split(':');
+            return parseInt(p[0]) * 60 + parseInt(p[1] || 0);
+        }
+        function enHorario(horario) {
+            if (!horario) return true;
+            const partes = horario.toUpperCase().split(' A ');
+            if (partes.length < 2) return true;
+            const ini = parsearMin(partes[0]), fin = parsearMin(partes[1]);
+            return ini <= fin ? (minActual >= ini && minActual <= fin) : (minActual >= ini || minActual <= fin);
+        }
 
         const lista = text.split(/\r?\n/)
             .map(l => l.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/))
             .filter(cols => (cols[0] || '').replace(/"/g,'').trim().toUpperCase() === hoyDia)
+            .filter(cols => enHorario((cols[2] || '').replace(/"/g,'').trim()))
             .map(cols => {
                 const actividad = (cols[1] || '').replace(/"/g,'').trim();
                 return actividad ? `<li class="agenda-evento">${actividad}</li>` : '';
