@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">2.5</div>
+            <div id="go2rtc-version">2.6</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -347,13 +347,16 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     function actualizarTicker() {
         const h = new Date().getHours();
         const scroll = document.getElementById('noticias-scroll');
+        const label = document.querySelector('.ticker-label');
         if (h >= 20) {
             scroll.textContent = MSG_DESCANSO;
             scroll.style.color = '#FFB6C1';
-            scroll.style.animationDuration = '400s';
+            scroll.style.animationDuration = '250s';
+            if (label) label.style.display = 'none';
         } else {
             scroll.style.color = '';
             scroll.style.animationDuration = '160s';
+            if (label) label.style.display = '';
         }
     }
 
@@ -422,7 +425,7 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             .join('');
 
         document.getElementById('contenedor-agenda').innerHTML = `
-            <div style="font-size:1.5rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
+            <div style="font-size:2.25rem;color:var(--dim);text-transform:uppercase;font-weight:700;margin-bottom:8px">
                 ${hoyDia}
             </div>
             <ul style="list-style:none;padding:0">${lista || 'Sin actividades hoy'}</ul>`;
