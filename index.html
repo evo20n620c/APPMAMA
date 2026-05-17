@@ -154,7 +154,7 @@
         .left-column-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: agenda; }
         .bottom-left-agenda { padding: 18px 22px; flex-direction: column; flex: 1.5; min-height: 0; overflow-y: auto; scrollbar-width: none; }
         .bottom-left-agenda::-webkit-scrollbar { display: none; }
-        .agenda-evento { font-size: 1.5rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
+        .agenda-evento { font-size: 2.25rem; font-weight: 500; color: var(--text); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 10px; }
         .agenda-evento::before { content: ""; min-width: 8px; height: 8px; background: var(--accent); border-radius: 50%; margin-top: 7px; }
         .bottom-right-container { display: flex; flex-direction: column; gap: 15px; background: transparent; border: none; grid-area: cameras; }
         .paisaje-mini-box { flex: 3; min-height: 0; background: #6B5240; border-radius: 40px; overflow: hidden; border: 1px solid var(--border); position: relative; }
@@ -251,7 +251,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">2.4</div>
+            <div id="go2rtc-version">2.5</div>
             <div class="ticker-label">Noticias</div>
             <div id="noticias-scroll">Sincronizando titulares de Argentina...</div>
         </div>
@@ -342,7 +342,23 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
             .filter(Boolean).join(' • ');
     }
 
+    const MSG_DESCANSO = 'DESCANSAMOS  ✨  Si nos despertamos, respiramos profundo 3 veces, inhalando y exhalando profundo.  Nos relajamos.  Y dormimos.  🌙  ';
+
+    function actualizarTicker() {
+        const h = new Date().getHours();
+        const scroll = document.getElementById('noticias-scroll');
+        if (h >= 20) {
+            scroll.textContent = MSG_DESCANSO;
+            scroll.style.color = '#FFB6C1';
+            scroll.style.animationDuration = '400s';
+        } else {
+            scroll.style.color = '';
+            scroll.style.animationDuration = '160s';
+        }
+    }
+
     async function cargarNoticias() {
+        if (new Date().getHours() >= 20) { actualizarTicker(); return; }
         try {
             const r = await fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL), { signal: AbortSignal.timeout(10000) });
             const d = await r.json();
@@ -479,12 +495,17 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
         } catch (_) {}
     }
 
+    let animalIdx = 0;
     function actualizarPaisaje() {
         const c1 = document.getElementById('capa1'), c2 = document.getElementById('capa2');
         const t = alternar ? c2 : c1, o = alternar ? c1 : c2;
+        const h = new Date().getHours();
 
         let url, lugar = 'Foto del día';
-        if (bingImagenes.length) {
+        if (h >= 20) {
+            url = `https://loremflickr.com/1200/800/sleeping,animals,cute?random=${++animalIdx}`;
+            lugar = 'Animalitos durmiendo 🐾';
+        } else if (bingImagenes.length) {
             const bi = bingImagenes[bingIdx % bingImagenes.length];
             url = bi.url; lugar = bi.lugar || 'Foto del día'; bingIdx++;
         } else {
@@ -580,10 +601,12 @@ const RSS_URL = 'https://www.lanacion.com.ar/arc/outboundfeeds/rss/';
     conReintentos(actualizarMensaje);
     mostrarLetra();
     conReintentos(cargarNoticias);
+    actualizarTicker();
 
     iniciarScrollAgenda();
     setInterval(aplicarAntiBurn, 30000);
     setInterval(actualizarModo, 60000);
+    setInterval(actualizarTicker, 60000);
     setInterval(reloj, 1000);
     setInterval(clima, 300000);
     setInterval(cargarAgenda, 60000);
