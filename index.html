@@ -254,7 +254,7 @@
             </div>
         </div>
         <div class="news-ticker">
-            <div id="go2rtc-version">4.2</div>
+            <div id="go2rtc-version">4.3</div>
             <div id="noticias-scroll">...</div>
         </div>
     </div>
@@ -363,12 +363,16 @@
                     <div id="trivia-opc-a" style="${opcStyle}"><b>A.</b> ${q.opcA}</div>
                     <div id="trivia-opc-b" style="${opcStyle}"><b>B.</b> ${q.opcB}</div>
                     <div id="trivia-opc-c" style="${opcStyle}"><b>C.</b> ${q.opcC}</div>
+                    <div id="trivia-respuesta" style="display:none;font-size:1.6rem;font-weight:700;color:#5CB85C;padding:6px 0;">✓ ${q.respuesta}</div>
                 </div>
             </div>`;
         triviaMostradaTimer = setTimeout(() => {
+            const letra = (q.respuesta || '').trim().toUpperCase().charAt(0);
             const ids = { 'A': 'trivia-opc-a', 'B': 'trivia-opc-b', 'C': 'trivia-opc-c' };
-            const el = document.getElementById(ids[q.respuesta]);
+            const el = document.getElementById(ids[letra]);
             if (el) { el.style.background = '#5CB85C'; el.style.color = '#fff'; el.style.borderColor = '#5CB85C'; }
+            const resp = document.getElementById('trivia-respuesta');
+            if (resp) resp.style.display = 'block';
             triviaMostradaTimer = setTimeout(() => { triviaIdx++; mostrarTrivia(); }, 10000);
         }, 30000);
     }
